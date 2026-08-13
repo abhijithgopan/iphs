@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>IPHS Assessment Tool</title>
+<meta name="theme-color" content="#17365D">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IPHS Tool">
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
+        onerror="this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<style>
+:root{
+  --navy:#17365D;
+  --navy-light:#2C4E7C;
+  --bg:#F4F6F8;
+  --card:#FFFFFF;
+  --border:#E1E6EB;
+  --text:#1A1A1A;
+  --muted:#6B7280;
+  --amber:#B45309;
+  --green:#8FD98F;
+  --green-soft:#BFE6BF;
+  --yellow:#FFE066;
+  --red:#FF9999;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+body{padding-bottom:24px;}
+header.topbar{
+  background:var(--navy); color:#fff; padding:12px 14px;
+  position:sticky; top:0; z-index:50;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+header.topbar h1{font-size:17px; margin:0 0 8px 0; font-weight:700;}
+.tabbar{display:flex; gap:6px;}
+.tabbtn{
+  flex:1; background:var(--navy-light); color:#fff; border:none;
+  padding:9px 6px; border-radius:8px; font-weight:600; font-size:13px;
+  cursor:pointer;
+}
+.tabbtn.active{background:#fff; color:var(--navy);}
+.status{
+  padding:8px 14px; font-size:12.5px; color:var(--amber); font-weight:600;
+  background:#FFF8EC; border-bottom:1px solid #F3E3C4;
+}
+.progress{height:3px; background:#E5E7EB; overflow:hidden; display:none;}
+.progress.on{display:block;}
+.progress .bar{height:100%; width:40%; background:var(--navy);
+  animation:slide 1.1s infinite ease-in-out;}
+@keyframes slide{0%{margin-left:-40%;}100%{margin-left:100%;}}
+
+main{padding:12px;}
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:14px; margin-bottom:12px;
+}
+.card h2{font-size:14px; margin:0 0 10px 0; color:var(--navy); font-weight:700;}
+.file-row{display:flex; flex-direction:column; gap:8px;}
+.filebtn{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  background:#EDF1F6; border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; font-size:13px; cursor:pointer;
+}
+.filebtn input[type=file]{display:none;}
+.filebtn .label{font-weight:600; color:var(--navy);}
+.filebtn .fname{color:var(--muted); font-size:12px; max-width:60%;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right;}
+.btnrow{display:flex; gap:8px; margin-top:10px;}
+button.primary{
+  flex:1; background:var(--navy); color:#fff; border:none; border-radius:10px;
+  padding:11px; font-weight:700; font-size:13.5px; cursor:pointer;
+}
+button.primary:disabled{opacity:.5;}
+button.secondary{
+  background:#fff; color:var(--navy); border:1px solid var(--navy);
+  border-radius:10px; padding:9px 12px; font-weight:700; font-size:12.5px; cursor:pointer;
+}
+
+.kpirow{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:8px;}
+.kpirow.wide{grid-template-columns:repeat(3,1fr);}
+@media (min-width:520px){.kpirow{grid-template-columns:repeat(4,1fr);}}
+.kpi{
+  border:1px solid var(--border); border-radius:10px; padding:10px 6px;
+  text-align:center; background:#fff;
+}
+.kpi .t{font-size:10.5px; color:var(--muted); font-weight:700; text-transform:uppercase;
+  letter-spacing:.02em;}
+.kpi .v{font-size:22px; font-weight:800; color:var(--navy); margin-top:2px;}
+.kpi.compliant{background:var(--green); border-color:var(--green);}
+.kpi.progressive{background:var(--yellow); border-color:var(--yellow);}
+.kpi.aspirant{background:var(--red); border-color:var(--red);}
+.kpi.compliant .t, .kpi.compliant .v, .kpi.progressive .t, .kpi.progressive .v,
+.kpi.aspirant .t, .kpi.aspirant .v{color:#1a1a1a;}
+.bands-note{font-size:11.5px; color:var(--muted); margin:6px 0 0 0;}
+
+.fieldrow{display:flex; flex-direction:column; gap:4px; margin-bottom:8px;}
+.fieldrow label{font-size:11.5px; font-weight:700; color:var(--navy);}
+.fieldrow select, .fieldrow input[type=text]{
+  padding:9px 10px; border-radius:8px; border:1px solid var(--border);
+  font-size:13.5px; background:#fff; color:var(--text); width:100%;
+}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+
+.tablewrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
+table{border-collapse:collapse; width:100%; font-size:12px; min-width:640px;}
+th, td{padding:7px 8px; text-align:left; border-bottom:1px solid #EEF1F4; white-space:nowrap;}
+th{background:#F0F3F7; color:var(--navy); font-weight:700; cursor:pointer; position:sticky; top:0;}
+th .arrow{font-size:9px;}
+tr:hover td{background:#FAFBFC;}
+
+.legend{display:flex; flex-wrap:wrap; gap:10px; font-size:11.5px; color:var(--muted); margin:8px 0;}
+.legend .sw{display:inline-block; width:12px; height:12px; border:1px solid #ccc;
+  border-radius:3px; vertical-align:-1px; margin-right:4px;}
+
+.mode-note{font-size:12px; color:var(--navy); font-style:italic; margin:2px 0 8px 0;}
+
+.indwrap{display:flex; flex-direction:column; gap:6px;}
+.indrow{
+  border:1px solid var(--border); border-radius:10px; padding:9px 10px; cursor:pointer;
+}
+.indrow .top{display:flex; justify-content:space-between; gap:8px; align-items:flex-start;}
+.indrow .name{font-weight:700; font-size:13px; color:var(--text); flex:1;}
+.indrow .chev{font-size:11px; color:var(--muted); margin-top:2px;}
+.indrow .meta{font-size:10.5px; color:var(--muted); margin-top:2px;}
+.indrow .stats{display:flex; gap:10px; font-size:11px; margin-top:6px; flex-wrap:wrap;}
+.indrow .stats span b{color:var(--navy);}
+.children{margin-top:8px; display:none; border-top:1px dashed var(--border); padding-top:6px;}
+.children.open{display:block;}
+.childrow{
+  display:flex; justify-content:space-between; gap:6px; padding:6px 8px; border-radius:8px;
+  font-size:11.5px; margin-bottom:4px;
+}
+.childrow .fname{flex:1;}
+.searchbar{margin-bottom:8px;}
+
+.empty{color:var(--muted); font-size:13px; text-align:center; padding:20px 0;}
+footer.credit{text-align:center; color:var(--muted); font-size:10.5px; padding:10px;}
+.hidden{display:none !important;}
+.small-muted{font-size:11px; color:var(--muted);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>IPHS Assessment Tool</h1>
+  <div class="tabbar">
+    <button class="tabbtn active" id="tabbtn-summary" onclick="showTab('summary')">1. Summary</button>
+    <button class="tabbtn" id="tabbtn-analysis" onclick="showTab('analysis')">2. IPHS Analysis</button>
+  </div>
+</header>
+<div class="progress" id="progressBar"><div class="bar"></div></div>
+<div class="status" id="statusLine">Load your IPHS mapping CSV and ODK .xlsb export below to begin.</div>
+
+<main>
+
+  <div class="card" id="loadCard">
+    <h2>Load data</h2>
+    <div class="file-row">
+      <label class="filebtn">
+        <span class="label">📄 Indicator mapping CSV</span>
+        <span class="fname" id="mappingName">Choose file…</span>
+        <input type="file" id="mappingInput" accept=".csv">
+      </label>
+      <label class="filebtn">
+        <span class="label">📊 ODK raw export (.xlsb)</span>
+        <span class="fname" id="sourceName">Choose file…</span>
+        <input type="file" id="sourceInput" accept=".xlsb">
+      </label>
+    </div>
+    <div class="btnrow">
+      <button class="primary" id="loadBtn" disabled onclick="loadData()">Load &amp; Analyze</button>
+    </div>
+    <p class="small-muted" style="margin:8px 0 0 0;">
+      Files are processed entirely on this device — nothing is uploaded anywhere.
+    </p>
+  </div>
+
+  <!-- ============ SUMMARY TAB ============ -->
+  <div id="tab-summary">
+    <div class="card">
+      <h2>Facility Overview</h2>
+      <div class="kpirow">
+        <div class="kpi"><div class="t">Facilities</div><div class="v" id="kpiFacilities">—</div></div>
+        <div class="kpi"><div class="t">Districts</div><div class="v" id="kpiDistricts">—</div></div>
+        <div class="kpi"><div class="t">DH</div><div class="v" id="kpiDH">—</div></div>
+        <div class="kpi"><div class="t">CHC</div><div class="v" id="kpiCHC">—</div></div>
+        <div class="kpi"><div class="t">SDH</div><div class="v" id="kpiSDH">—</div></div>
+        <div class="kpi"><div class="t">PHC</div><div class="v" id="kpiPHC">—</div></div>
+        <div class="kpi"><div class="t">SHC</div><div class="v" id="kpiSHC">—</div></div>
+      </div>
+      <div class="kpirow" style="grid-template-columns:repeat(3,1fr);">
+        <div class="kpi compliant"><div class="t">Compliant</div><div class="v" id="kpiCompliant">—</div></div>
+        <div class="kpi progressive"><div class="t">Progressive</div><div class="v" id="kpiProgressive">—</div></div>
+        <div class="kpi aspirant"><div class="t">Aspirant</div><div class="v" id="kpiAspirant">—</div></div>
+      </div>
+      <p class="bands-note">Compliance bands: Compliant ≥ 80%, Progressive 50–80%, Aspirant &lt; 50% (Ministry-weighted overall score).</p>
+    </div>
+
+    <div class="card">
+      <h2>Domain scores</h2>
+      <div class="fieldrow">
+        <label>Group by</label>
+        <select id="summaryGroupBy" onchange="refreshSummaryTab()">
+          <option value="District">District</option>
+          <option value="Facility Type">Facility Type</option>
+          <option value="Facility Sub-Type">Facility Sub-Type</option>
+          <option value="Specific Facility">Specific Facility</option>
+        </select>
+      </div>
+      <div class="tablewrap">
+        <table id="summaryTable">
+          <thead><tr id="summaryHead"></tr></thead>
+          <tbody id="summaryBody"><tr><td class="empty">No data loaded yet.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="btnrow"><button class="secondary" onclick="exportSummary()">Export table (CSV)</button></div>
+    </div>
+  </div>
+
+  <!-- ============ ANALYSIS TAB ============ -->
+  <div id="tab-analysis" class="hidden">
+    <div class="card">
+      <h2>Drill down</h2>
+      <p class="small-muted" style="margin-top:-4px;">State → District → Facility Type → Facility Sub-Type → Exact Facility. Leave on "All" to stay at State level.</p>
+      <div class="grid2">
+        <div class="fieldrow"><label>District</label><select id="anDistrict" onchange="refreshAnalysisTab()"></select></div>
+        <div class="fieldrow"><label>Facility Type</label><select id="anFT" onchange="refreshAnalysisTab()"></select></div>
+        <div class="fieldrow"><label>Facility Sub-Type</label><select id="anFST" onchange="refreshAnalysisTab()"></select></div>
+        <div class="fieldrow"><label>Exact Facility</label><select id="anFacility" onchange="refreshAnalysisTab()"></select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Narrow the indicator list</h2>
+      <div class="grid2">
+        <div class="fieldrow"><label>Compliance</label><select id="anCompliance" onchange="refreshAnalysisTab()"></select></div>
+        <div class="fieldrow"><label>Domain</label><select id="anDomain" onchange="refreshAnalysisTable()"></select></div>
+      </div>
+      <div class="fieldrow searchbar">
+        <label>Search indicator</label>
+        <input type="text" id="anSearch" placeholder="Type to filter indicators…" oninput="refreshAnalysisTable()">
+      </div>
+      <p class="mode-note" id="anModeNote"></p>
+      <div class="legend">
+        <span><span class="sw" style="background:#BFE6BF"></span>0% missing</span>
+        <span><span class="sw" style="background:#FFB3B3"></span>some missing</span>
+        <span><span class="sw" style="background:#FF3232"></span>all missing</span>
+        <span><span class="sw" style="background:#FFFFFF"></span>not applicable</span>
+      </div>
+      <div class="btnrow" style="margin-bottom:8px;"><button class="secondary" onclick="exportAnalysis()">Export table (CSV)</button></div>
+      <div class="indwrap" id="indicatorList"><div class="empty">No data loaded yet.</div></div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="credit">IPHS Assessment Tool · runs fully offline in your browser</footer>
+
+<script src="app.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
