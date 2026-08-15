@@ -25,45 +25,60 @@
   --accent-tint-strong:rgba(0,122,255,0.18);
   --bg:#F2F2F7;
   --card:#FFFFFF;
-  --grouped-card:#FFFFFF;
+  --card-border:transparent;
   --border:rgba(60,60,67,0.29);
-  --separator:rgba(60,60,67,0.13);
+  --separator:rgba(60,60,67,0.16);
   --text:#000000;
   --text-secondary:#3C3C43;
-  --muted:#8E8E93;
-  --amber:#FF9500;
-  --amber-tint:rgba(255,149,0,0.12);
-  --green:#B7ECB0;
-  --yellow:#FFE9A8;
-  --red:#FFC2C0;
-  --chip-bg:rgba(118,118,128,0.12);
+  --muted:#6E6E73;
+  --amber:#C2650A;
+  --amber-tint:rgba(255,149,0,0.14);
+  --green:#34C759;
+  --yellow:#FF9500;
+  --red:#FF3B30;
+  --chip-bg:rgba(118,118,128,0.13);
   --nav-blur:rgba(242,242,247,0.82);
   --shadow:0 1px 2px rgba(0,0,0,0.04), 0 1px 8px rgba(0,0,0,0.03);
   --radius-lg:16px;
   --radius-md:12px;
   --radius-sm:9px;
+  /* pop accent set for KPI tiles — Apple system hues, used round-robin */
+  --pop1:#007AFF; --pop1-tint:rgba(0,122,255,0.14);
+  --pop2:#5856D6; --pop2-tint:rgba(88,86,214,0.14);
+  --pop3:#30B0C7; --pop3-tint:rgba(48,176,199,0.16);
+  --pop4:#AF52DE; --pop4-tint:rgba(175,82,222,0.14);
+  --pop5:#FF9500; --pop5-tint:rgba(255,149,0,0.14);
+  --pop6:#FF2D55; --pop6-tint:rgba(255,45,85,0.14);
+  --pop7:#34C759; --pop7-tint:rgba(52,199,89,0.14);
 }
 @media (prefers-color-scheme: dark){
   :root{
     --accent:#0A84FF;
-    --accent-tint:rgba(10,132,255,0.18);
-    --accent-tint-strong:rgba(10,132,255,0.28);
+    --accent-tint:rgba(10,132,255,0.22);
+    --accent-tint-strong:rgba(10,132,255,0.32);
     --bg:#000000;
     --card:#1C1C1E;
-    --grouped-card:#1C1C1E;
-    --border:rgba(84,84,88,0.6);
-    --separator:rgba(84,84,88,0.48);
+    --card-border:rgba(255,255,255,0.08);
+    --border:#3A3A3C;
+    --separator:#38383A;
     --text:#FFFFFF;
-    --text-secondary:#EBEBF5;
-    --muted:#98989F;
+    --text-secondary:rgba(235,235,245,0.72);
+    --muted:#AEAEB2;
     --amber:#FF9F0A;
-    --amber-tint:rgba(255,159,10,0.16);
-    --green:#274B2B;
-    --yellow:#4A3D14;
-    --red:#4A2323;
+    --amber-tint:rgba(255,159,10,0.18);
+    --green:#30D158;
+    --yellow:#FF9F0A;
+    --red:#FF453A;
     --chip-bg:rgba(118,118,128,0.24);
-    --nav-blur:rgba(28,28,30,0.78);
+    --nav-blur:rgba(20,20,22,0.78);
     --shadow:0 1px 2px rgba(0,0,0,0.5), 0 1px 10px rgba(0,0,0,0.35);
+    --pop1-tint:rgba(10,132,255,0.24);
+    --pop2:#7D7AFF; --pop2-tint:rgba(125,122,255,0.22);
+    --pop3:#40C8E0; --pop3-tint:rgba(64,200,224,0.22);
+    --pop4:#BF5AF2; --pop4-tint:rgba(191,90,242,0.22);
+    --pop5-tint:rgba(255,159,10,0.22);
+    --pop6:#FF375F; --pop6-tint:rgba(255,55,95,0.22);
+    --pop7:#30D158; --pop7-tint:rgba(48,209,88,0.22);
   }
 }
 
@@ -115,10 +130,11 @@ main{padding:16px 14px;}
   background:var(--card); border-radius:var(--radius-lg);
   padding:14px 14px 16px; margin-bottom:20px;
   box-shadow:var(--shadow);
+  border:0.5px solid var(--card-border);
 }
 .card h2{
-  font-size:12px; margin:0 0 10px 2px; color:var(--muted); font-weight:600;
-  text-transform:uppercase; letter-spacing:0.04em;
+  font-size:12px; margin:0 0 10px 2px; color:var(--muted); font-weight:700;
+  text-transform:uppercase; letter-spacing:0.05em;
 }
 
 .file-row{display:flex; flex-direction:column; border-radius:var(--radius-md); overflow:hidden;}
@@ -131,20 +147,22 @@ main{padding:16px 14px;}
 .filebtn input[type=file]{display:none;}
 .filebtn .label{font-weight:400; color:var(--text); display:flex; align-items:center; gap:10px;}
 .filebtn .icon{
-  width:29px; height:29px; border-radius:7px; background:var(--accent);
+  width:29px; height:29px; border-radius:7px;
+  background:linear-gradient(135deg, var(--accent), var(--pop2));
   display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;
 }
 .filebtn .fname{color:var(--muted); font-size:13px; max-width:42%;
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right;}
-.filebtn .chev{color:var(--muted); font-size:13px; margin-left:2px;}
+.filebtn .chev{color:var(--muted); font-size:15px; margin-left:2px; opacity:.6;}
 
 .btnrow{display:flex; gap:10px; margin-top:14px;}
 button.primary{
-  flex:1; background:var(--accent); color:#fff; border:none; border-radius:var(--radius-sm);
+  flex:1; background:linear-gradient(135deg, var(--accent), var(--pop2));
+  color:#fff; border:none; border-radius:var(--radius-sm);
   padding:12px; font-weight:590; font-size:15px; cursor:pointer; font-family:inherit;
-  transition:opacity .15s ease;
+  transition:opacity .15s ease; box-shadow:0 2px 10px var(--accent-tint);
 }
-button.primary:disabled{opacity:.38;}
+button.primary:disabled{opacity:.38; box-shadow:none;}
 button.primary:active:not(:disabled){opacity:.75;}
 button.secondary{
   background:var(--accent-tint); color:var(--accent); border:none;
@@ -159,35 +177,48 @@ button.secondary:active{background:var(--accent-tint-strong);}
   border-radius:var(--radius-md); padding:12px 6px;
   text-align:center; background:var(--chip-bg);
 }
-.kpi .t{font-size:10.5px; color:var(--muted); font-weight:600; text-transform:uppercase;
+.kpi .t{font-size:10.5px; color:var(--muted); font-weight:700; text-transform:uppercase;
   letter-spacing:.02em;}
 .kpi .v{font-size:22px; font-weight:700; color:var(--text); margin-top:3px; letter-spacing:-0.3px;}
+
+/* colorful "pop" tiles for the facility-count KPIs */
+.kpi.pop1{background:var(--pop1-tint);} .kpi.pop1 .t,.kpi.pop1 .v{color:var(--pop1);}
+.kpi.pop2{background:var(--pop2-tint);} .kpi.pop2 .t,.kpi.pop2 .v{color:var(--pop2);}
+.kpi.pop3{background:var(--pop3-tint);} .kpi.pop3 .t,.kpi.pop3 .v{color:var(--pop3);}
+.kpi.pop4{background:var(--pop4-tint);} .kpi.pop4 .t,.kpi.pop4 .v{color:var(--pop4);}
+.kpi.pop5{background:var(--pop5-tint);} .kpi.pop5 .t,.kpi.pop5 .v{color:var(--pop5);}
+.kpi.pop6{background:var(--pop6-tint);} .kpi.pop6 .t,.kpi.pop6 .v{color:var(--pop6);}
+.kpi.pop7{background:var(--pop7-tint);} .kpi.pop7 .t,.kpi.pop7 .v{color:var(--pop7);}
+
+/* solid, saturated compliance tiles — brand colors, consistent in both themes */
 .kpi.compliant{background:var(--green);}
 .kpi.progressive{background:var(--yellow);}
 .kpi.aspirant{background:var(--red);}
 .kpi.compliant .t, .kpi.compliant .v, .kpi.progressive .t, .kpi.progressive .v,
-.kpi.aspirant .t, .kpi.aspirant .v{color:var(--text);}
+.kpi.aspirant .t, .kpi.aspirant .v{color:#FFFFFF;}
 .bands-note{font-size:11.5px; color:var(--muted); margin:10px 2px 0;}
 
 .fieldrow{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
-.fieldrow label{font-size:12px; font-weight:600; color:var(--muted);
+.fieldrow label{font-size:12px; font-weight:700; color:var(--muted);
   text-transform:uppercase; letter-spacing:.03em;}
 .fieldrow select, .fieldrow input[type=text]{
-  padding:10px 12px; border-radius:var(--radius-sm); border:none;
+  padding:10px 12px; border-radius:var(--radius-sm); border:0.5px solid var(--separator);
   font-size:15px; background:var(--chip-bg); color:var(--text); width:100%;
   font-family:inherit; appearance:none; -webkit-appearance:none;
 }
+.fieldrow input[type=text]::placeholder{color:var(--muted); opacity:1;}
 .fieldrow select{
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='16' viewBox='0 0 10 16'><path d='M1 5.5L5 1.5L9 5.5' stroke='%238E8E93' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M1 10.5L5 14.5L9 10.5' stroke='%238E8E93' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat:no-repeat; background-position:right 10px center; padding-right:28px;
 }
 .grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;}
 
-.tablewrap{overflow-x:auto; border-radius:var(--radius-md); background:var(--chip-bg);}
+.tablewrap{overflow-x:auto; border-radius:var(--radius-md); background:var(--chip-bg);
+  border:0.5px solid var(--separator);}
 table{border-collapse:collapse; width:100%; font-size:12px; min-width:640px;}
 th, td{padding:9px 10px; text-align:left; border-bottom:0.5px solid var(--separator); white-space:nowrap;}
-th{background:transparent; color:var(--muted); font-weight:600; cursor:pointer; position:sticky; top:0;
-  text-transform:uppercase; font-size:10.5px; letter-spacing:.02em; backdrop-filter:blur(6px);}
+th{background:var(--card); color:var(--muted); font-weight:700; cursor:pointer; position:sticky; top:0;
+  text-transform:uppercase; font-size:10.5px; letter-spacing:.02em;}
 th .arrow{font-size:9px; color:var(--accent);}
 tbody tr:last-child td{border-bottom:none;}
 
@@ -195,7 +226,7 @@ tbody tr:last-child td{border-bottom:none;}
 .legend .sw{display:inline-block; width:11px; height:11px; border-radius:3px;
   vertical-align:-1px; margin-right:5px;}
 
-.mode-note{font-size:12.5px; color:var(--accent); font-weight:500; margin:2px 2px 12px; font-style:normal;}
+.mode-note{font-size:12.5px; color:var(--accent); font-weight:600; margin:2px 2px 12px; font-style:normal;}
 
 .indwrap{display:flex; flex-direction:column; gap:8px;}
 .indrow{
@@ -204,12 +235,12 @@ tbody tr:last-child td{border-bottom:none;}
 }
 .indrow:active{transform:scale(0.985);}
 .indrow .top{display:flex; justify-content:space-between; gap:8px; align-items:flex-start;}
-.indrow .name{font-weight:590; font-size:14px; color:var(--text); flex:1; letter-spacing:-0.1px;}
-.indrow .chev{font-size:11px; color:var(--muted); margin-top:2px; transition:transform .18s ease;}
-.indrow .meta{font-size:11px; color:var(--text-secondary); opacity:.65; margin-top:2px;}
-.indrow .stats{display:flex; gap:12px; font-size:11px; margin-top:8px; flex-wrap:wrap; color:var(--text-secondary);}
-.indrow .stats span b{color:var(--text); font-weight:600;}
-.children{margin-top:10px; display:none; border-top:0.5px solid rgba(60,60,67,0.2); padding-top:8px;}
+.indrow .name{font-weight:590; font-size:14px; flex:1; letter-spacing:-0.1px;}
+.indrow .chev{font-size:11px; margin-top:2px; opacity:.75; transition:transform .18s ease;}
+.indrow .meta{font-size:11px; opacity:.72; margin-top:2px;}
+.indrow .stats{display:flex; gap:12px; font-size:11px; margin-top:8px; flex-wrap:wrap; opacity:.9;}
+.indrow .stats span b{font-weight:700;}
+.children{margin-top:10px; display:none; border-top:1px solid rgba(0,0,0,0.15); padding-top:8px;}
 .children.open{display:block;}
 .childrow{
   display:flex; justify-content:space-between; gap:6px; padding:7px 9px; border-radius:8px;
@@ -218,15 +249,10 @@ tbody tr:last-child td{border-bottom:none;}
 .childrow .fname{flex:1;}
 .searchbar{margin-bottom:4px;}
 
-/* The compliance/missing-% badges below are always painted with fixed light
-   pastel colors from app.js (data semantics, not theme chrome), so their
-   text must stay dark regardless of light/dark mode for legibility. */
-.indrow, .indrow .name, .indrow .meta, .indrow .chev, .indrow .stats,
-.indrow .stats span b, .childrow, #summaryBody td{
-  color:#1C1C1E !important;
-}
-.indrow .meta{opacity:.7;}
-.indrow .stats{opacity:.85;}
+/* .indrow / .childrow / summary rows get background AND text color set
+   inline by app.js (missingColor()/categoryColor() compute a contrast-safe
+   text color for whatever badge color is generated), so no color rules
+   are declared here — they inherit from the element's own inline style. */
 
 .empty{color:var(--muted); font-size:13px; text-align:center; padding:24px 0;}
 footer.credit{text-align:center; color:var(--muted); font-size:11px; padding:14px;}
@@ -277,13 +303,13 @@ footer.credit{text-align:center; color:var(--muted); font-size:11px; padding:14p
     <div class="card">
       <h2>Facility Overview</h2>
       <div class="kpirow">
-        <div class="kpi"><div class="t">Facilities</div><div class="v" id="kpiFacilities">—</div></div>
-        <div class="kpi"><div class="t">Districts</div><div class="v" id="kpiDistricts">—</div></div>
-        <div class="kpi"><div class="t">DH</div><div class="v" id="kpiDH">—</div></div>
-        <div class="kpi"><div class="t">CHC</div><div class="v" id="kpiCHC">—</div></div>
-        <div class="kpi"><div class="t">SDH</div><div class="v" id="kpiSDH">—</div></div>
-        <div class="kpi"><div class="t">PHC</div><div class="v" id="kpiPHC">—</div></div>
-        <div class="kpi"><div class="t">SHC</div><div class="v" id="kpiSHC">—</div></div>
+        <div class="kpi pop1"><div class="t">Facilities</div><div class="v" id="kpiFacilities">—</div></div>
+        <div class="kpi pop2"><div class="t">Districts</div><div class="v" id="kpiDistricts">—</div></div>
+        <div class="kpi pop3"><div class="t">DH</div><div class="v" id="kpiDH">—</div></div>
+        <div class="kpi pop4"><div class="t">CHC</div><div class="v" id="kpiCHC">—</div></div>
+        <div class="kpi pop5"><div class="t">SDH</div><div class="v" id="kpiSDH">—</div></div>
+        <div class="kpi pop6"><div class="t">PHC</div><div class="v" id="kpiPHC">—</div></div>
+        <div class="kpi pop7"><div class="t">SHC</div><div class="v" id="kpiSHC">—</div></div>
       </div>
       <div class="kpirow" style="grid-template-columns:repeat(3,1fr);">
         <div class="kpi compliant"><div class="t">Compliant</div><div class="v" id="kpiCompliant">—</div></div>
@@ -339,10 +365,10 @@ footer.credit{text-align:center; color:var(--muted); font-size:11px; padding:14p
       </div>
       <p class="mode-note" id="anModeNote"></p>
       <div class="legend">
-        <span><span class="sw" style="background:#BFE6BF"></span>0% missing</span>
-        <span><span class="sw" style="background:#FFB3B3"></span>some missing</span>
-        <span><span class="sw" style="background:#FF3232"></span>all missing</span>
-        <span><span class="sw" style="background:#FFFFFF"></span>not applicable</span>
+        <span><span class="sw" style="background:#34C759"></span>0% missing</span>
+        <span><span class="sw" style="background:#FF9500"></span>partial</span>
+        <span><span class="sw" style="background:#FF3B30"></span>all missing</span>
+        <span><span class="sw" style="background:#8E8E93"></span>not applicable</span>
       </div>
       <div class="btnrow" style="margin-bottom:8px;"><button class="secondary" onclick="exportAnalysis()">Export table (CSV)</button></div>
       <div class="indwrap" id="indicatorList"><div class="empty">No data loaded yet.</div></div>
