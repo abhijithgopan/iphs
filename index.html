@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>IPHS Assessment Tool</title>
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F2F2F7">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+<meta name="theme-color" content="#17365D">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -20,244 +18,134 @@
 
 <style>
 :root{
-  --accent:#007AFF;
-  --accent-tint:rgba(0,122,255,0.12);
-  --accent-tint-strong:rgba(0,122,255,0.18);
-  --bg:#F2F2F7;
+  --navy:#17365D;
+  --navy-light:#2C4E7C;
+  --bg:#F4F6F8;
   --card:#FFFFFF;
-  --card-border:transparent;
-  --border:rgba(60,60,67,0.29);
-  --separator:rgba(60,60,67,0.16);
-  --text:#000000;
-  --text-secondary:#3C3C43;
-  --muted:#6E6E73;
-  --amber:#C2650A;
-  --amber-tint:rgba(255,149,0,0.14);
-  --green:#34C759;
-  --yellow:#FF9500;
-  --red:#FF3B30;
-  --chip-bg:rgba(118,118,128,0.13);
-  --nav-blur:rgba(242,242,247,0.82);
-  --shadow:0 1px 2px rgba(0,0,0,0.04), 0 1px 8px rgba(0,0,0,0.03);
-  --radius-lg:16px;
-  --radius-md:12px;
-  --radius-sm:9px;
-  /* pop accent set for KPI tiles — Apple system hues, used round-robin */
-  --pop1:#007AFF; --pop1-tint:rgba(0,122,255,0.14);
-  --pop2:#5856D6; --pop2-tint:rgba(88,86,214,0.14);
-  --pop3:#30B0C7; --pop3-tint:rgba(48,176,199,0.16);
-  --pop4:#AF52DE; --pop4-tint:rgba(175,82,222,0.14);
-  --pop5:#FF9500; --pop5-tint:rgba(255,149,0,0.14);
-  --pop6:#FF2D55; --pop6-tint:rgba(255,45,85,0.14);
-  --pop7:#34C759; --pop7-tint:rgba(52,199,89,0.14);
+  --border:#E1E6EB;
+  --text:#1A1A1A;
+  --muted:#6B7280;
+  --amber:#B45309;
+  --green:#8FD98F;
+  --green-soft:#BFE6BF;
+  --yellow:#FFE066;
+  --red:#FF9999;
 }
-@media (prefers-color-scheme: dark){
-  :root{
-    --accent:#0A84FF;
-    --accent-tint:rgba(10,132,255,0.22);
-    --accent-tint-strong:rgba(10,132,255,0.32);
-    --bg:#000000;
-    --card:#1C1C1E;
-    --card-border:rgba(255,255,255,0.08);
-    --border:#3A3A3C;
-    --separator:#38383A;
-    --text:#FFFFFF;
-    --text-secondary:rgba(235,235,245,0.72);
-    --muted:#AEAEB2;
-    --amber:#FF9F0A;
-    --amber-tint:rgba(255,159,10,0.18);
-    --green:#30D158;
-    --yellow:#FF9F0A;
-    --red:#FF453A;
-    --chip-bg:rgba(118,118,128,0.24);
-    --nav-blur:rgba(20,20,22,0.78);
-    --shadow:0 1px 2px rgba(0,0,0,0.5), 0 1px 10px rgba(0,0,0,0.35);
-    --pop1-tint:rgba(10,132,255,0.24);
-    --pop2:#7D7AFF; --pop2-tint:rgba(125,122,255,0.22);
-    --pop3:#40C8E0; --pop3-tint:rgba(64,200,224,0.22);
-    --pop4:#BF5AF2; --pop4-tint:rgba(191,90,242,0.22);
-    --pop5-tint:rgba(255,159,10,0.22);
-    --pop6:#FF375F; --pop6-tint:rgba(255,55,95,0.22);
-    --pop7:#30D158; --pop7-tint:rgba(48,209,88,0.22);
-  }
-}
-
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+*{box-sizing:border-box;}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;}
-body{padding-bottom:32px;}
-
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+body{padding-bottom:24px;}
 header.topbar{
-  background:var(--nav-blur);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  backdrop-filter:saturate(180%) blur(20px);
-  padding:14px 16px 10px;
+  background:var(--navy); color:#fff; padding:12px 14px;
   position:sticky; top:0; z-index:50;
-  border-bottom:0.5px solid var(--separator);
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
 }
-header.topbar h1{
-  font-size:22px; margin:0 0 12px 0; font-weight:700; letter-spacing:-0.4px; color:var(--text);
-}
-
-.tabbar{
-  display:flex; gap:2px; background:var(--chip-bg); border-radius:9px; padding:2px;
-}
+header.topbar h1{font-size:17px; margin:0 0 8px 0; font-weight:700;}
+.tabbar{display:flex; gap:6px;}
 .tabbtn{
-  flex:1; background:transparent; color:var(--text); border:none;
-  padding:6px 6px; border-radius:7px; font-weight:590; font-size:13px;
-  cursor:pointer; transition:background .15s ease, box-shadow .15s ease;
-  font-family:inherit;
+  flex:1; background:var(--navy-light); color:#fff; border:none;
+  padding:9px 6px; border-radius:8px; font-weight:600; font-size:13px;
+  cursor:pointer;
 }
-.tabbtn.active{
-  background:var(--card); color:var(--text);
-  box-shadow:0 1px 1px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.08);
-}
-
+.tabbtn.active{background:#fff; color:var(--navy);}
 .status{
-  padding:9px 16px; font-size:12.5px; color:var(--amber); font-weight:590;
-  background:var(--amber-tint);
+  padding:8px 14px; font-size:12.5px; color:var(--amber); font-weight:600;
+  background:#FFF8EC; border-bottom:1px solid #F3E3C4;
 }
-.progress{height:2px; background:transparent; overflow:hidden; display:none;}
+.progress{height:3px; background:#E5E7EB; overflow:hidden; display:none;}
 .progress.on{display:block;}
-.progress .bar{height:100%; width:40%; background:var(--accent);
+.progress .bar{height:100%; width:40%; background:var(--navy);
   animation:slide 1.1s infinite ease-in-out;}
 @keyframes slide{0%{margin-left:-40%;}100%{margin-left:100%;}}
 
-main{padding:16px 14px;}
-
+main{padding:12px;}
 .card{
-  background:var(--card); border-radius:var(--radius-lg);
-  padding:14px 14px 16px; margin-bottom:20px;
-  box-shadow:var(--shadow);
-  border:0.5px solid var(--card-border);
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:14px; margin-bottom:12px;
 }
-.card h2{
-  font-size:12px; margin:0 0 10px 2px; color:var(--muted); font-weight:700;
-  text-transform:uppercase; letter-spacing:0.05em;
-}
-
-.file-row{display:flex; flex-direction:column; border-radius:var(--radius-md); overflow:hidden;}
+.card h2{font-size:14px; margin:0 0 10px 0; color:var(--navy); font-weight:700;}
+.file-row{display:flex; flex-direction:column; gap:8px;}
 .filebtn{
   display:flex; align-items:center; justify-content:space-between; gap:8px;
-  background:transparent; border:none; border-bottom:0.5px solid var(--separator);
-  padding:12px 4px; font-size:15px; cursor:pointer;
+  background:#EDF1F6; border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; font-size:13px; cursor:pointer;
 }
-.filebtn:last-of-type{border-bottom:none;}
 .filebtn input[type=file]{display:none;}
-.filebtn .label{font-weight:400; color:var(--text); display:flex; align-items:center; gap:10px;}
-.filebtn .icon{
-  width:29px; height:29px; border-radius:7px;
-  background:linear-gradient(135deg, var(--accent), var(--pop2));
-  display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;
-}
-.filebtn .fname{color:var(--muted); font-size:13px; max-width:42%;
+.filebtn .label{font-weight:600; color:var(--navy);}
+.filebtn .fname{color:var(--muted); font-size:12px; max-width:60%;
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right;}
-.filebtn .chev{color:var(--muted); font-size:15px; margin-left:2px; opacity:.6;}
-
-.btnrow{display:flex; gap:10px; margin-top:14px;}
+.btnrow{display:flex; gap:8px; margin-top:10px;}
 button.primary{
-  flex:1; background:linear-gradient(135deg, var(--accent), var(--pop2));
-  color:#fff; border:none; border-radius:var(--radius-sm);
-  padding:12px; font-weight:590; font-size:15px; cursor:pointer; font-family:inherit;
-  transition:opacity .15s ease; box-shadow:0 2px 10px var(--accent-tint);
+  flex:1; background:var(--navy); color:#fff; border:none; border-radius:10px;
+  padding:11px; font-weight:700; font-size:13.5px; cursor:pointer;
 }
-button.primary:disabled{opacity:.38; box-shadow:none;}
-button.primary:active:not(:disabled){opacity:.75;}
+button.primary:disabled{opacity:.5;}
 button.secondary{
-  background:var(--accent-tint); color:var(--accent); border:none;
-  border-radius:var(--radius-sm); padding:9px 14px; font-weight:590; font-size:13px;
-  cursor:pointer; font-family:inherit;
+  background:#fff; color:var(--navy); border:1px solid var(--navy);
+  border-radius:10px; padding:9px 12px; font-weight:700; font-size:12.5px; cursor:pointer;
 }
-button.secondary:active{background:var(--accent-tint-strong);}
 
 .kpirow{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:8px;}
+.kpirow.wide{grid-template-columns:repeat(3,1fr);}
 @media (min-width:520px){.kpirow{grid-template-columns:repeat(4,1fr);}}
 .kpi{
-  border-radius:var(--radius-md); padding:12px 6px;
-  text-align:center; background:var(--chip-bg);
+  border:1px solid var(--border); border-radius:10px; padding:10px 6px;
+  text-align:center; background:#fff;
 }
 .kpi .t{font-size:10.5px; color:var(--muted); font-weight:700; text-transform:uppercase;
   letter-spacing:.02em;}
-.kpi .v{font-size:22px; font-weight:700; color:var(--text); margin-top:3px; letter-spacing:-0.3px;}
-
-/* colorful "pop" tiles for the facility-count KPIs */
-.kpi.pop1{background:var(--pop1-tint);} .kpi.pop1 .t,.kpi.pop1 .v{color:var(--pop1);}
-.kpi.pop2{background:var(--pop2-tint);} .kpi.pop2 .t,.kpi.pop2 .v{color:var(--pop2);}
-.kpi.pop3{background:var(--pop3-tint);} .kpi.pop3 .t,.kpi.pop3 .v{color:var(--pop3);}
-.kpi.pop4{background:var(--pop4-tint);} .kpi.pop4 .t,.kpi.pop4 .v{color:var(--pop4);}
-.kpi.pop5{background:var(--pop5-tint);} .kpi.pop5 .t,.kpi.pop5 .v{color:var(--pop5);}
-.kpi.pop6{background:var(--pop6-tint);} .kpi.pop6 .t,.kpi.pop6 .v{color:var(--pop6);}
-.kpi.pop7{background:var(--pop7-tint);} .kpi.pop7 .t,.kpi.pop7 .v{color:var(--pop7);}
-
-/* solid, saturated compliance tiles — brand colors, consistent in both themes */
-.kpi.compliant{background:var(--green);}
-.kpi.progressive{background:var(--yellow);}
-.kpi.aspirant{background:var(--red);}
+.kpi .v{font-size:22px; font-weight:800; color:var(--navy); margin-top:2px;}
+.kpi.compliant{background:var(--green); border-color:var(--green);}
+.kpi.progressive{background:var(--yellow); border-color:var(--yellow);}
+.kpi.aspirant{background:var(--red); border-color:var(--red);}
 .kpi.compliant .t, .kpi.compliant .v, .kpi.progressive .t, .kpi.progressive .v,
-.kpi.aspirant .t, .kpi.aspirant .v{color:#FFFFFF;}
-.bands-note{font-size:11.5px; color:var(--muted); margin:10px 2px 0;}
+.kpi.aspirant .t, .kpi.aspirant .v{color:#1a1a1a;}
+.bands-note{font-size:11.5px; color:var(--muted); margin:6px 0 0 0;}
 
-.fieldrow{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
-.fieldrow label{font-size:12px; font-weight:700; color:var(--muted);
-  text-transform:uppercase; letter-spacing:.03em;}
+.fieldrow{display:flex; flex-direction:column; gap:4px; margin-bottom:8px;}
+.fieldrow label{font-size:11.5px; font-weight:700; color:var(--navy);}
 .fieldrow select, .fieldrow input[type=text]{
-  padding:10px 12px; border-radius:var(--radius-sm); border:0.5px solid var(--separator);
-  font-size:15px; background:var(--chip-bg); color:var(--text); width:100%;
-  font-family:inherit; appearance:none; -webkit-appearance:none;
+  padding:9px 10px; border-radius:8px; border:1px solid var(--border);
+  font-size:13.5px; background:#fff; color:var(--text); width:100%;
 }
-.fieldrow input[type=text]::placeholder{color:var(--muted); opacity:1;}
-.fieldrow select{
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='16' viewBox='0 0 10 16'><path d='M1 5.5L5 1.5L9 5.5' stroke='%238E8E93' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M1 10.5L5 14.5L9 10.5' stroke='%238E8E93' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-  background-repeat:no-repeat; background-position:right 10px center; padding-right:28px;
-}
-.grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
 
-.tablewrap{overflow-x:auto; border-radius:var(--radius-md); background:var(--chip-bg);
-  border:0.5px solid var(--separator);}
+.tablewrap{overflow-x:auto; border:1px solid var(--border); border-radius:10px;}
 table{border-collapse:collapse; width:100%; font-size:12px; min-width:640px;}
-th, td{padding:9px 10px; text-align:left; border-bottom:0.5px solid var(--separator); white-space:nowrap;}
-th{background:var(--card); color:var(--muted); font-weight:700; cursor:pointer; position:sticky; top:0;
-  text-transform:uppercase; font-size:10.5px; letter-spacing:.02em;}
-th .arrow{font-size:9px; color:var(--accent);}
-tbody tr:last-child td{border-bottom:none;}
+th, td{padding:7px 8px; text-align:left; border-bottom:1px solid #EEF1F4; white-space:nowrap;}
+th{background:#F0F3F7; color:var(--navy); font-weight:700; cursor:pointer; position:sticky; top:0;}
+th .arrow{font-size:9px;}
+tr:hover td{background:#FAFBFC;}
 
-.legend{display:flex; flex-wrap:wrap; gap:12px; font-size:11.5px; color:var(--muted); margin:10px 0;}
-.legend .sw{display:inline-block; width:11px; height:11px; border-radius:3px;
-  vertical-align:-1px; margin-right:5px;}
+.legend{display:flex; flex-wrap:wrap; gap:10px; font-size:11.5px; color:var(--muted); margin:8px 0;}
+.legend .sw{display:inline-block; width:12px; height:12px; border:1px solid #ccc;
+  border-radius:3px; vertical-align:-1px; margin-right:4px;}
 
-.mode-note{font-size:12.5px; color:var(--accent); font-weight:600; margin:2px 2px 12px; font-style:normal;}
+.mode-note{font-size:12px; color:var(--navy); font-style:italic; margin:2px 0 8px 0;}
 
-.indwrap{display:flex; flex-direction:column; gap:8px;}
+.indwrap{display:flex; flex-direction:column; gap:6px;}
 .indrow{
-  border-radius:var(--radius-md); padding:11px 12px; cursor:pointer;
-  transition:transform .1s ease;
+  border:1px solid var(--border); border-radius:10px; padding:9px 10px; cursor:pointer;
 }
-.indrow:active{transform:scale(0.985);}
 .indrow .top{display:flex; justify-content:space-between; gap:8px; align-items:flex-start;}
-.indrow .name{font-weight:590; font-size:14px; flex:1; letter-spacing:-0.1px;}
-.indrow .chev{font-size:11px; margin-top:2px; opacity:.75; transition:transform .18s ease;}
-.indrow .meta{font-size:11px; opacity:.72; margin-top:2px;}
-.indrow .stats{display:flex; gap:12px; font-size:11px; margin-top:8px; flex-wrap:wrap; opacity:.9;}
-.indrow .stats span b{font-weight:700;}
-.children{margin-top:10px; display:none; border-top:1px solid rgba(0,0,0,0.15); padding-top:8px;}
+.indrow .name{font-weight:700; font-size:13px; color:var(--text); flex:1;}
+.indrow .chev{font-size:11px; color:var(--muted); margin-top:2px;}
+.indrow .meta{font-size:10.5px; color:var(--muted); margin-top:2px;}
+.indrow .stats{display:flex; gap:10px; font-size:11px; margin-top:6px; flex-wrap:wrap;}
+.indrow .stats span b{color:var(--navy);}
+.children{margin-top:8px; display:none; border-top:1px dashed var(--border); padding-top:6px;}
 .children.open{display:block;}
 .childrow{
-  display:flex; justify-content:space-between; gap:6px; padding:7px 9px; border-radius:8px;
-  font-size:11.5px; margin-bottom:5px;
+  display:flex; justify-content:space-between; gap:6px; padding:6px 8px; border-radius:8px;
+  font-size:11.5px; margin-bottom:4px;
 }
 .childrow .fname{flex:1;}
-.searchbar{margin-bottom:4px;}
+.searchbar{margin-bottom:8px;}
 
-/* .indrow / .childrow / summary rows get background AND text color set
-   inline by app.js (missingColor()/categoryColor() compute a contrast-safe
-   text color for whatever badge color is generated), so no color rules
-   are declared here — they inherit from the element's own inline style. */
-
-.empty{color:var(--muted); font-size:13px; text-align:center; padding:24px 0;}
-footer.credit{text-align:center; color:var(--muted); font-size:11px; padding:14px;}
+.empty{color:var(--muted); font-size:13px; text-align:center; padding:20px 0;}
+footer.credit{text-align:center; color:var(--muted); font-size:10.5px; padding:10px;}
 .hidden{display:none !important;}
-.small-muted{font-size:12px; color:var(--muted);}
+.small-muted{font-size:11px; color:var(--muted);}
 </style>
 </head>
 <body>
@@ -278,15 +166,13 @@ footer.credit{text-align:center; color:var(--muted); font-size:11px; padding:14p
     <h2>Load data</h2>
     <div class="file-row">
       <label class="filebtn">
-        <span class="label"><span class="icon">📄</span> Indicator mapping CSV</span>
+        <span class="label">📄 Indicator mapping CSV</span>
         <span class="fname" id="mappingName">Choose file…</span>
-        <span class="chev">›</span>
         <input type="file" id="mappingInput" accept=".csv">
       </label>
       <label class="filebtn">
-        <span class="label"><span class="icon">📊</span> ODK raw export (.xlsb)</span>
+        <span class="label">📊 ODK raw export (.xlsb)</span>
         <span class="fname" id="sourceName">Choose file…</span>
-        <span class="chev">›</span>
         <input type="file" id="sourceInput" accept=".xlsb">
       </label>
     </div>
@@ -303,13 +189,13 @@ footer.credit{text-align:center; color:var(--muted); font-size:11px; padding:14p
     <div class="card">
       <h2>Facility Overview</h2>
       <div class="kpirow">
-        <div class="kpi pop1"><div class="t">Facilities</div><div class="v" id="kpiFacilities">—</div></div>
-        <div class="kpi pop2"><div class="t">Districts</div><div class="v" id="kpiDistricts">—</div></div>
-        <div class="kpi pop3"><div class="t">DH</div><div class="v" id="kpiDH">—</div></div>
-        <div class="kpi pop4"><div class="t">CHC</div><div class="v" id="kpiCHC">—</div></div>
-        <div class="kpi pop5"><div class="t">SDH</div><div class="v" id="kpiSDH">—</div></div>
-        <div class="kpi pop6"><div class="t">PHC</div><div class="v" id="kpiPHC">—</div></div>
-        <div class="kpi pop7"><div class="t">SHC</div><div class="v" id="kpiSHC">—</div></div>
+        <div class="kpi"><div class="t">Facilities</div><div class="v" id="kpiFacilities">—</div></div>
+        <div class="kpi"><div class="t">Districts</div><div class="v" id="kpiDistricts">—</div></div>
+        <div class="kpi"><div class="t">DH</div><div class="v" id="kpiDH">—</div></div>
+        <div class="kpi"><div class="t">CHC</div><div class="v" id="kpiCHC">—</div></div>
+        <div class="kpi"><div class="t">SDH</div><div class="v" id="kpiSDH">—</div></div>
+        <div class="kpi"><div class="t">PHC</div><div class="v" id="kpiPHC">—</div></div>
+        <div class="kpi"><div class="t">SHC</div><div class="v" id="kpiSHC">—</div></div>
       </div>
       <div class="kpirow" style="grid-template-columns:repeat(3,1fr);">
         <div class="kpi compliant"><div class="t">Compliant</div><div class="v" id="kpiCompliant">—</div></div>
@@ -365,10 +251,10 @@ footer.credit{text-align:center; color:var(--muted); font-size:11px; padding:14p
       </div>
       <p class="mode-note" id="anModeNote"></p>
       <div class="legend">
-        <span><span class="sw" style="background:#34C759"></span>0% missing</span>
-        <span><span class="sw" style="background:#FF9500"></span>partial</span>
-        <span><span class="sw" style="background:#FF3B30"></span>all missing</span>
-        <span><span class="sw" style="background:#8E8E93"></span>not applicable</span>
+        <span><span class="sw" style="background:#BFE6BF"></span>0% missing</span>
+        <span><span class="sw" style="background:#FFB3B3"></span>some missing</span>
+        <span><span class="sw" style="background:#FF3232"></span>all missing</span>
+        <span><span class="sw" style="background:#FFFFFF"></span>not applicable</span>
       </div>
       <div class="btnrow" style="margin-bottom:8px;"><button class="secondary" onclick="exportAnalysis()">Export table (CSV)</button></div>
       <div class="indwrap" id="indicatorList"><div class="empty">No data loaded yet.</div></div>

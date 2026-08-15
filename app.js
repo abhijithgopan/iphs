@@ -20,9 +20,7 @@ const ANY_FACILITY_TOKENS = new Set(["all", "any", "*"]);
 const COMPLIANT_MIN = 80.0;
 const PROGRESSIVE_MIN = 50.0;
 const COMPLIANCE_CATEGORIES = ["Compliant", "Progressive", "Aspirant"];
-// Vivid, theme-independent brand colors (Apple system green/orange/red).
-// Orange (not yellow) is used for "Progressive" so white text stays readable.
-const CATEGORY_COLORS = { Compliant: "#34C759", Progressive: "#FF9500", Aspirant: "#FF3B30" };
+const CATEGORY_COLORS = { Compliant: "#8FD98F", Progressive: "#FFE066", Aspirant: "#FF9999" };
 const SUMMARY_CACHE_MAX = 100;
 
 // Embedded original iGPT calculation rules: "indicator|raw_variable|domain" -> standard_variable
@@ -89,48 +87,16 @@ function isPresent(value) {
   return ["yes", "y", "true", "present", "available", "pass"].includes(String(value).trim().toLowerCase());
 }
 
-function isDarkMode() {
-  return typeof window !== "undefined" && window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
-
-// Relative luminance (WCAG) -> pick black or white text so any generated
-// badge color stays readable regardless of the surrounding light/dark theme.
-function autoTextColor(hex) {
-  const c = hex.replace("#", "");
-  const r = parseInt(c.substring(0, 2), 16) / 255;
-  const g = parseInt(c.substring(2, 4), 16) / 255;
-  const b = parseInt(c.substring(4, 6), 16) / 255;
-  const lin = v => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
-  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-  return L > 0.53 ? "#1C1C1E" : "#FFFFFF";
-}
-
-function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
-function hexOf(r, g, b) {
-  const h = n => n.toString(16).toUpperCase().padStart(2, "0");
-  return `#${h(r)}${h(g)}${h(b)}`;
-}
-
-// mirrors missing_color() in the original app, but with a vivid
-// green -> orange -> red gradient (instead of pastel) and an automatically
-// contrast-safe text color, so it reads clearly in both light and dark mode.
 function missingColor(missingPct, applicable) {
   if (applicable === null || applicable === undefined || applicable === 0 || missingPct === null || missingPct === undefined) {
-    return isDarkMode() ? { bg: "#2C2C2E", color: "#AEAEB2" } : { bg: "#F2F2F7", color: "#8E8E93" };
+    return "#FFFFFF";
   }
+  if (missingPct <= 0) return "#BFE6BF";
   const t = Math.min(Math.max(missingPct, 0), 100) / 100.0;
-  const GREEN = [52, 199, 89], ORANGE = [255, 149, 0], RED = [255, 59, 48];
-  let r, g, b;
-  if (t <= 0.5) {
-    const k = t / 0.5;
-    r = lerp(GREEN[0], ORANGE[0], k); g = lerp(GREEN[1], ORANGE[1], k); b = lerp(GREEN[2], ORANGE[2], k);
-  } else {
-    const k = (t - 0.5) / 0.5;
-    r = lerp(ORANGE[0], RED[0], k); g = lerp(ORANGE[1], RED[1], k); b = lerp(ORANGE[2], RED[2], k);
-  }
-  const bg = hexOf(r, g, b);
-  return { bg, color: autoTextColor(bg) };
+  const g = Math.round(230 - t * 170);
+  const b = Math.round(230 - t * 190);
+  const hx = n => n.toString(16).toUpperCase().padStart(2, "0");
+  return `#FF${hx(g)}${hx(b)}`;
 }
 
 function formatPct(value) {
@@ -138,9 +104,7 @@ function formatPct(value) {
 }
 
 function categoryColor(cat) {
-  const bg = CATEGORY_COLORS[cat] || (isDarkMode() ? "#2C2C2E" : "#F2F2F7");
-  const color = CATEGORY_COLORS[cat] ? "#FFFFFF" : (isDarkMode() ? "#AEAEB2" : "#8E8E93");
-  return { bg, color };
+  return CATEGORY_COLORS[cat] || "#FFFFFF";
 }
 
 // mirrors aggregate_indicator()
@@ -469,12 +433,6 @@ function refreshAll() {
   refreshAnalysisTab();
 }
 
-if (typeof window !== "undefined" && window.matchMedia) {
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-    if (facilityRows.length) refreshAll();
-  });
-}
-
 // ---------------- Summary tab ----------------
 
 function refreshSummaryTab() {
@@ -561,7 +519,7 @@ function drawSummaryBody(rows) {
     return;
   }
   body.innerHTML = rows.map(r =>
-    `<tr style="background:${r.color.bg}; color:${r.color.color};"><td>${escapeHtml(r.name)}</td>${r.cells.map(c => `<td>${c}</td>`).join("")}</tr>`
+    `<tr style="background:${r.color}"><td>${escapeHtml(r.name)}</td>${r.cells.map(c => `<td>${c}</td>`).join("")}</tr>`
   ).join("");
 }
 
@@ -700,9 +658,9 @@ function drawIndicatorList(entries) {
     return;
   }
   container.innerHTML = entries.map((e, i) => {
-    const c = missingColor(e.missingPct, e.applicable);
+    const color = missingColor(e.missingPct, e.applicable);
     return `
-    <div class="indrow" style="background:${c.bg}; color:${c.color};" onclick="toggleIndicator(${i})">
+    <div class="indrow" style="background:${color}" onclick="toggleIndicator(${i})">
       <div class="top">
         <div>
           <div class="name">${escapeHtml(e.indicator)}</div>
@@ -774,8 +732,8 @@ function toggleIndicator(i) {
         displayRequired = "1"; displayObserved = String(observedFlag); displayMissing = String(1 - observedFlag);
         missingPct = observedFlag ? 0.0 : 100.0;
       }
-      const c = missingColor(missingPct, requiredForColor);
-      return `<div class="childrow" style="background:${c.bg}; color:${c.color};">
+      const color = missingColor(missingPct, requiredForColor);
+      return `<div class="childrow" style="background:${color}">
         <span class="fname">↳ ${escapeHtml(facility.Facility)} (${escapeHtml(facility.District)})</span>
         <span>R:${displayRequired} P:${displayObserved} M:${displayMissing} ${formatPct(missingPct)}</span>
       </div>`;
